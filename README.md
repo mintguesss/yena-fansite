@@ -1,6 +1,16 @@
 # YENA FANS — YENA（최예나）非官方粉絲站
 
+🌐 線上版：<https://mintguesss.github.io/yena-fansite/>
+
 純 HTML / CSS / JavaScript，不需要安裝任何套件或打包工具。
+
+## 更新線上版
+
+改完檔案後推上 `main`，GitHub Pages 約 1 分鐘內自動更新：
+
+```powershell
+git add -A; git commit -m "update"; git push
+```
 
 ## 本機預覽
 
