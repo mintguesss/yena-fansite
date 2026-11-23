@@ -669,7 +669,7 @@
     const total = D.gallery.reduce((n, g) => n + g.images.length, 0);
     return `<section class="page container">
       <h1 class="page-title">📸 YENA 相簿</h1>
-      <p class="page-sub">${D.gallery.length} 本相簿、${total} 張照片。點擊相簿開啟大圖，可用方向鍵或滑動切換。</p>
+      <p class="page-sub">${D.gallery.length} 本相簿、${total} 張照片。點擊相簿開啟大圖，可用方向鍵或滑動切換，也能下載單張或整本打包成 zip。</p>
       <div class="chips">
         <button class="chip${galleryState.cat === "all" ? " active" : ""}" data-gcat="all">全部</button>
         ${Object.entries(GCATS).map(([k, v]) => `<button class="chip${galleryState.cat === k ? " active" : ""}" data-gcat="${k}">${v}</button>`).join("")}
@@ -686,7 +686,11 @@
   const lb = { a: 0, i: 0 };
   function lbShow() {
     const g = D.gallery[lb.a], el = $("#lb");
-    el.innerHTML = `<button class="lb-btn lb-close" data-lb-close aria-label="關閉">✕</button>
+    el.innerHTML = `<div class="lb-tools">
+        <button class="lb-tool" data-dl-one>⬇ 下載這張</button>
+        ${g.images.length > 1 ? `<button class="lb-tool" data-dl-all>${dlBusy ? "📦 打包中…" : `📦 整本下載（${g.images.length} 張 zip）`}</button>` : ""}
+      </div>
+      <button class="lb-btn lb-close" data-lb-close aria-label="關閉">✕</button>
       <button class="lb-btn lb-prev" data-lb="-1" aria-label="上一張">‹</button>
       <img class="main" src="${esc(g.images[lb.i])}" alt="${esc(g.title)}" referrerpolicy="no-referrer">
       <button class="lb-btn lb-next" data-lb="1" aria-label="下一張">›</button>
@@ -698,6 +702,64 @@
   const lbOpen = (a, i = 0) => { lb.a = a; lb.i = i; lbShow(); };
   const lbMove = (d) => { const n = D.gallery[lb.a].images.length; lb.i = (lb.i + d + n) % n; lbShow(); };
   const lbClose = () => { $("#lb").classList.remove("open"); document.body.style.overflow = ""; };
+
+  /* 下載：kpopping CDN 有開 CORS，可直接抓成 blob 存檔 */
+  const safeName = (s) => s.replace(/[\\/:*?"<>|]+/g, "").replace(/\s+/g, "_").slice(0, 60);
+  const extOf = (u) => (u.split("?")[0].match(/\.(jpe?g|png|webp|gif)$/i) || [, "jpg"])[1].toLowerCase();
+  const photoName = (g, k, u) => `YENA_${g.date}_${safeName(g.title)}_${pad(k + 1)}.${extOf(u)}`;
+  const fetchBlob = async (u) => {
+    const r = await fetch(u, { mode: "cors", referrerPolicy: "no-referrer" });
+    if (!r.ok) throw new Error(r.status);
+    return r.blob();
+  };
+  const saveBlob = (blob, name) => {
+    const a = document.createElement("a");
+    a.href = URL.createObjectURL(blob);
+    a.download = name;
+    document.body.appendChild(a);
+    a.click();
+    a.remove();
+    setTimeout(() => URL.revokeObjectURL(a.href), 4000);
+  };
+  let dlBusy = false;
+  async function downloadOne(a, k) {
+    const g = D.gallery[a], u = g.images[k];
+    toast("下載原圖中…");
+    try { saveBlob(await fetchBlob(u), photoName(g, k, u)); toast("已下載 💖"); }
+    catch { window.open(u, "_blank", "noopener"); toast("已在新分頁開啟原圖，可長按或右鍵另存"); }
+  }
+  let jszip;
+  const loadJSZip = () => jszip || (jszip = new Promise((ok, no) => {
+    const s = document.createElement("script");
+    s.src = "https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js";
+    s.onload = () => ok(window.JSZip);
+    s.onerror = () => { jszip = null; no(new Error("JSZip")); };
+    document.head.appendChild(s);
+  }));
+  async function downloadAlbum(a) {
+    if (dlBusy) return toast("上一個相簿還在打包中…");
+    dlBusy = true;
+    const g = D.gallery[a];
+    try {
+      const JSZip = await loadJSZip();
+      const zip = new JSZip();
+      let done = 0, failed = 0;
+      toast(`打包中 0 / ${g.images.length}（原圖較大，請稍候）`);
+      await Promise.all(g.images.map(async (u, k) => {
+        try { zip.file(photoName(g, k, u), await fetchBlob(u)); } catch { failed++; }
+        const msg = `打包中 ${++done} / ${g.images.length}`;
+        toast(msg);
+        const b = $("[data-dl-all]"); if (b) b.textContent = "📦 " + msg;
+      }));
+      zip.file("來源.txt", `${g.title}\n${g.date}\n來源：${g.credit}\n${g.url}\n\n照片版權屬原著作權人，僅供個人收藏，請勿商用。\n`);
+      saveBlob(await zip.generateAsync({ type: "blob" }), `YENA_${g.date}_${safeName(g.title)}.zip`);
+      toast(failed ? `已下載，${failed} 張抓取失敗` : `已下載 ${g.images.length} 張 💖`);
+    } catch { toast("打包失敗，請改用單張下載"); }
+    finally {
+      dlBusy = false;
+      const b = $("[data-dl-all]"); if (b) b.textContent = `📦 整本下載（${D.gallery[lb.a].images.length} 張 zip）`;
+    }
+  }
   addEventListener("keydown", (e) => {
     if (!$("#lb").classList.contains("open")) return;
     if (e.key === "Escape") lbClose();
@@ -766,6 +828,8 @@
     if (ds.lb) return lbMove(+ds.lb);
     if (ds.lbi !== undefined) { lb.i = +ds.lbi; return lbShow(); }
     if (ds.lbClose !== undefined) return lbClose();
+    if (ds.dlOne !== undefined) return downloadOne(lb.a, lb.i);
+    if (ds.dlAll !== undefined) return downloadAlbum(lb.a);
     if (ds.gcat) { galleryState.cat = ds.gcat; return render(true); }
     if (ds.yt !== undefined) {
       el.parentElement.innerHTML = `<iframe src="https://www.youtube-nocookie.com/embed/${encodeURIComponent(ds.yt)}?autoplay=1" title="YouTube" allow="autoplay; encrypted-media; picture-in-picture" allowfullscreen></iframe>`;
