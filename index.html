@@ -1,0 +1,83 @@
+<!doctype html>
+<html lang="zh-Hant-TW">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>YENA FANS | YENA 非官方粉絲站</title>
+  <meta name="description" content="YENA（최예나）非官方粉絲站：行程表、作品集、周邊資訊、官方社群動態、應援指南與粉絲專區。">
+  <meta name="theme-color" content="#ff4f9a">
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🐥</text></svg>">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Bagel+Fat+One&family=Noto+Sans+TC:wght@400;500;700;800;900&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/style.css">
+  <script>
+    // 先套用主題，避免閃爍
+    try {
+      var t = localStorage.getItem("yena-theme");
+      if (!t) t = matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light";
+      document.documentElement.dataset.theme = t;
+    } catch (e) {}
+  </script>
+</head>
+<body>
+  <!-- 小鴨吉祥物（原創插圖） -->
+  <svg width="0" height="0" style="position:absolute" aria-hidden="true">
+    <symbol id="duck" viewBox="0 0 200 200">
+      <ellipse cx="100" cy="186" rx="58" ry="8" fill="rgba(0,0,0,.08)"/>
+      <path d="M38 128c0-30 26-50 62-50s66 18 66 50c0 32-30 52-64 52s-64-20-64-52z" fill="#ffd23f"/>
+      <path d="M150 112c14-6 26-2 30 6-8 2-16 10-26 10z" fill="#ffc400"/>
+      <path d="M60 130c10 14 30 18 44 10" stroke="#f5b700" stroke-width="5" fill="none" stroke-linecap="round"/>
+      <circle cx="96" cy="70" r="46" fill="#ffd23f"/>
+      <path d="M92 26c-4-12 6-20 12-14 2-8 14-6 12 4" stroke="#f5b700" stroke-width="5" fill="none" stroke-linecap="round"/>
+      <ellipse cx="78" cy="66" rx="6" ry="8" fill="#2b2416"/>
+      <ellipse cx="116" cy="66" rx="6" ry="8" fill="#2b2416"/>
+      <circle cx="80" cy="63" r="2.2" fill="#fff"/>
+      <circle cx="118" cy="63" r="2.2" fill="#fff"/>
+      <ellipse cx="66" cy="84" rx="9" ry="5" fill="#ff7eb6" opacity=".6"/>
+      <ellipse cx="128" cy="84" rx="9" ry="5" fill="#ff7eb6" opacity=".6"/>
+      <path d="M80 86c6-6 28-6 34 0 4 4 0 14-17 14S76 90 80 86z" fill="#ff9f43"/>
+      <path d="M82 90c8 3 22 3 30 0" stroke="#e07b1a" stroke-width="2.5" fill="none" stroke-linecap="round"/>
+      <path d="M150 40l3 8 8 3-8 3-3 8-3-8-8-3 8-3z" fill="#ff7eb6"/>
+    </symbol>
+  </svg>
+
+  <a class="visually-hidden" href="#app">跳到主要內容</a>
+
+  <header class="site-header">
+    <div class="container header-inner">
+      <a class="logo" href="#home">
+        <svg class="duck" viewBox="0 0 200 200" aria-hidden="true"><use href="#duck"/></svg>
+        <span class="logo-text">YENA FANS<small>지구미 非官方粉絲站</small></span>
+      </a>
+      <nav class="nav" id="nav" aria-label="主選單"></nav>
+      <button class="icon-btn menu-btn" id="menuBtn" aria-label="開啟選單">☰</button>
+      <button class="icon-btn" id="themeBtn" aria-label="切換深色模式">🌙</button>
+    </div>
+  </header>
+  <div class="ticker" id="ticker" aria-label="快訊"></div>
+
+  <main id="app" tabindex="-1"></main>
+
+  <footer class="site-footer">
+    <div class="container footer-inner">
+      <div>
+        <h5>🐥 YENA FANS</h5>
+        <p id="disclaimer" style="margin:0 0 8px"></p>
+        <p style="margin:0">資料最後更新：<span id="updated"></span>　·　照片版權屬原著作權人，經 kpopping 整理並標註來源；小鴨插圖為原創。</p>
+      </div>
+      <div>
+        <h5>資料來源</h5>
+        <ul id="sources"></ul>
+      </div>
+    </div>
+  </footer>
+
+  <button class="btn to-top" id="toTop" aria-label="回到頂端">↑</button>
+  <div class="lb" id="lb" role="dialog" aria-label="照片檢視"></div>
+  <div class="toast" id="toast" role="status" aria-live="polite"></div>
+
+  <script src="js/data.js"></script>
+  <script src="js/app.js"></script>
+</body>
+</html>
