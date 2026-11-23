@@ -642,3 +642,25 @@ a.stat:hover { transform: translateY(-3px); }
 /* grid 子元素不要被表格撐寬 */
 .grid > *, .sched-layout > *, .profile-top > * { min-width: 0; }
 @media (max-width: 820px) { .avatar::after { right: -4px; top: -22px; } }
+
+/* 特別日 */
+.special-banner { border-bottom: 2px solid var(--ink); color: #2d1020; background: linear-gradient(90deg, #ffd23f, #ff9cc6, #ffd23f); background-size: 200% 100%; animation: sbShine 6s linear infinite; }
+.special-banner.sb-solo { background-image: linear-gradient(90deg, #c7a6ff, #ff9cc6, #c7a6ff); }
+.special-banner.sb-izone { background-image: linear-gradient(90deg, #ff6fae, #c7a6ff, #8fd3ff, #ff6fae); }
+.special-banner.sb-release { background-image: linear-gradient(90deg, #ff2e63, #ff7eb6, #ffd23f, #ff2e63); color: #fff; }
+.special-banner.sb-release .sb-text span { color: #fff; opacity: .92; }
+.special-banner.sb-soon { background: var(--accent-soft); animation: none; color: var(--text); }
+@keyframes sbShine { to { background-position: -200% 0; } }
+.sb-inner { display: flex; align-items: center; gap: 12px 18px; flex-wrap: wrap; padding: 10px 0; }
+.sb-text { flex: 1 1 260px; display: flex; flex-direction: column; line-height: 1.35; }
+.sb-text b { font-size: 1.05rem; font-weight: 900; }
+.sb-text span { font-size: .85rem; font-weight: 700; opacity: .8; }
+.sb-acts { display: flex; gap: 8px; flex-wrap: wrap; }
+.special-banner .btn.ghost { background: rgba(255,255,255,.85); color: #2d1020; }
+body[data-special="bday"] .ticker { background: #f5b700; color: #2d1020; }
+body[data-special="solo"] .ticker { background: #9b6cff; }
+body[data-special="izone"] .ticker { background: linear-gradient(90deg, #ff6fae, #b18cff); }
+body[data-special="bday"] .hero-badge, body[data-special="solo"] .hero-badge, body[data-special="izone"] .hero-badge, body[data-special="release"] .hero-badge { background: var(--duck); color: #2d1020; }
+.confetti { position: fixed; inset: 0; pointer-events: none; z-index: 140; overflow: hidden; }
+.confetti span { position: absolute; top: -3rem; animation: fall linear forwards; }
+@keyframes fall { 0% { transform: translate(0, 0) rotate(0); opacity: 1; } 85% { opacity: 1; } 100% { transform: translate(var(--dx), 110vh) rotate(540deg); opacity: 0; } }

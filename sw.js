@@ -1,6 +1,6 @@
 /* 離線快取：本站檔案「網路優先」，連不上時才用快取，所以更新會立刻生效 */
-const CACHE = "yena-fans-v1";
-const CORE = ["./", "index.html", "css/style.css", "js/data.js", "js/i18n.js", "js/app.js", "data/auto.json", "assets/icon-192.png", "manifest.webmanifest"];
+const CACHE = "yena-fans-v2";
+const CORE = ["./", "index.html", "css/style.css", "js/data.js", "js/i18n.js", "js/content.js", "js/app.js", "data/auto.json", "assets/icon-192.png", "manifest.webmanifest"];
 
 self.addEventListener("install", (e) => {
   e.waitUntil(caches.open(CACHE).then((c) => c.addAll(CORE)).catch(() => {}));

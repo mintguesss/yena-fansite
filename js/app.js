@@ -376,7 +376,56 @@
   }
   const submitUrl = (tpl) => `https://github.com/${D.meta.repo}/issues/new?template=${tpl}.yml`;
   const submitBtn = (tpl, label) => `<a class="btn yellow sm" href="${submitUrl(tpl)}" target="_blank" rel="noopener">✍️ ${label}</a>`;
-  const langNotice = () => (LANG === "zh" ? "" : `<p class="note-box">🌐 ${t("本區內容目前僅提供中文。")}</p>`);
+  // 長篇內容（js/content.js）：目前語言沒有時退回中文
+  const CT = (k) => { const c = window.YENA_CONTENT || {}; return (c[LANG] && c[LANG][k]) || (c.zh && c.zh[k]) || []; };
+  const quizItem = (i) => { const tr = LANG !== "zh" && CT("quiz")[i]; return tr ? { ...D.quiz[i], ...tr } : D.quiz[i]; };
+  const glossary = () => (LANG !== "zh" && CT("glossary").length ? CT("glossary") : D.glossary);
+  const tipCards = (list) => `<div class="grid grid-3">${list.map(([h, p]) => `<div class="card"><h4 style="margin-top:0">${esc(h)}</h4><p class="note">${esc(p)}</p></div>`).join("")}</div>`;
+  const steps = (list) => `<ol class="guide-steps">${list.map(([h, p]) => `<li><div><b>${esc(h)}</b>${p ? `<br><span class="note">${esc(p)}</span>` : ""}</div></li>`).join("")}</ol>`;
+
+  /* =========================================================
+     特別日：生日、出道紀念日、發行日（網址加 ?today=2026-09-29 可預覽）
+     ========================================================= */
+  function specialDay() {
+    const ov = new URLSearchParams(location.search).get("today");
+    const td = /^\d{4}-\d{2}-\d{2}$/.test(ov || "") ? ov : todayStr();
+    const md = td.slice(5), y = +td.slice(0, 4);
+    const P = D.profile;
+    if (md === P.birth.slice(5)) return { kind: "bday", td, emoji: ["🎂", "🎉", "🐥", "💛", "🎈", "⭐", "💖"], text: t("🎂 HAPPY YENA DAY！今天是 YENA 的 {n} 歲生日", { n: y - +P.birth.slice(0, 4) }), sub: t("和 지구미 一起說生日快樂 💛") };
+    if (md === P.soloDebut.slice(5)) return { kind: "solo", td, emoji: ["🎉", "💜", "🐥", "✨", "💖", "😆"], text: t("🎉 Solo 出道 {n} 週年 & 지구미 誕生日！", { n: y - +P.soloDebut.slice(0, 4) }), sub: t("謝謝 YENA，也謝謝每一位 지구미") };
+    if (md === P.izoneDebut.slice(5)) return { kind: "izone", td, emoji: ["🌹", "💖", "✨", "🌸", "💜"], text: t("🌹 IZ*ONE 出道 {n} 週年", { n: y - +P.izoneDebut.slice(0, 4) }), sub: t("La Vie en Rose 🌹 永遠記得那一天") };
+    const rel = M.releases.find((r) => r.date === td);
+    if (rel) return { kind: "release", td, emoji: ["💿", "🎵", "💖", "🍒", "✨"], text: t("💿 今天發行〈{x}〉！", { x: rel.title }), sub: t("一起串流支持 YENA 🎧"), action: `<button class="btn yellow sm" data-open="r.${rel.id}">🎵 ${t("立刻聽")}</button>` };
+    const left = daysFrom(td, `${y}-${P.birth.slice(5)}`);
+    if (left > 0 && left <= 7) return { kind: "soon", td, quiet: true, text: t("🎂 YENA 生日倒數 D-{n}", { n: left }), sub: t("9/29 一起應援吧！") };
+    return null;
+  }
+  let SP = null;
+  function confetti(emoji) {
+    if (matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+    const box = document.createElement("div");
+    box.className = "confetti";
+    box.setAttribute("aria-hidden", "true");
+    box.innerHTML = Array.from({ length: 46 }, () => {
+      const e = emoji[Math.floor(Math.random() * emoji.length)];
+      return `<span style="left:${Math.random() * 100}%;animation-delay:${(Math.random() * 2.2).toFixed(2)}s;animation-duration:${(3.2 + Math.random() * 2.6).toFixed(2)}s;font-size:${(1.1 + Math.random() * 1.4).toFixed(2)}rem;--dx:${Math.round(Math.random() * 160 - 80)}px">${e}</span>`;
+    }).join("");
+    document.body.appendChild(box);
+    setTimeout(() => box.remove(), 8000);
+  }
+  function renderSpecial() {
+    SP = specialDay();
+    const el = $("#special");
+    document.body.dataset.special = SP ? SP.kind : "";
+    if (!SP) { el.innerHTML = ""; return; }
+    el.innerHTML = `<div class="special-banner sb-${SP.kind}"><div class="container sb-inner">
+      <div class="sb-text"><b>${esc(SP.text)}</b><span>${esc(SP.sub || "")}</span></div>
+      <div class="sb-acts">${SP.action || ""}${SP.quiet ? "" : `<button class="btn ghost sm" data-confetti>🎉 ${t("再撒一次")}</button>`}</div>
+    </div></div>`;
+    let shown = false;
+    try { shown = sessionStorage.getItem("yena-confetti") === SP.td + SP.kind; sessionStorage.setItem("yena-confetti", SP.td + SP.kind); } catch (e) {}
+    if (!SP.quiet && !shown) setTimeout(() => confetti(SP.emoji), 400);
+  }
 
   /* =========================================================
      頁面
@@ -401,10 +450,10 @@
 
     return `
     <section class="hero">
-      <div class="float-hearts" aria-hidden="true">${["♥", "★", "♥", "✦", "♥", "★", "♥"].map((h, i) => `<span style="left:${6 + i * 14}%;animation-delay:${i * 1.3}s;font-size:${1 + (i % 3) * 0.4}rem">${h}</span>`).join("")}</div>
+      <div class="float-hearts" aria-hidden="true">${(SP && !SP.quiet ? [...SP.emoji, SP.emoji[0]].slice(0, 7) : ["♥", "★", "♥", "✦", "♥", "★", "♥"]).map((h, i) => `<span style="left:${6 + i * 14}%;animation-delay:${i * 1.3}s;font-size:${1 + (i % 3) * 0.4}rem">${h}</span>`).join("")}</div>
       <div class="container hero-inner">
         <div>
-          <span class="hero-badge">🐥 Unofficial Fan Site · 지구미</span>
+          <span class="hero-badge">${SP && !SP.quiet ? esc(SP.text) : "🐥 Unofficial Fan Site · 지구미"}</span>
           <h1>YENA<br><span class="ko">최예나 · 崔叡娜</span></h1>
           <p class="lead">${esc((P_L("intro") || P.intro).split(/[。.]\s?/)[0])}${LANG === "zh" ? "。" : ". "}${t("行程、作品、照片、周邊與社群動態，和 지구미 一起追星 ♥")}</p>
           <div class="hero-actions">
@@ -551,7 +600,7 @@
       <h2 class="section-title">${t("新手入坑推薦 6 首")}</h2>
       <div class="card table-wrap"><table class="tbl">
         <tr><th>#</th><th>${t("歌曲")}</th><th>${t("推薦原因")}</th><th></th></tr>
-        ${D.starter.map((s, i) => `<tr><td>${i + 1}</td><td><b>${esc(s.song)}</b></td><td>${esc(s.why)}</td><td><a class="btn ghost sm" href="https://www.youtube.com/results?search_query=${q("YENA " + s.song)}" target="_blank" rel="noopener">▶ ${t("聽")}</a></td></tr>`).join("")}
+        ${D.starter.map((s, i) => `<tr><td>${i + 1}</td><td><b>${esc(s.song)}</b></td><td>${esc((LANG !== "zh" && CT("starterWhy")[i]) || s.why)}</td><td><a class="btn ghost sm" href="https://www.youtube.com/results?search_query=${q("YENA " + s.song)}" target="_blank" rel="noopener">▶ ${t("聽")}</a></td></tr>`).join("")}
       </table></div>
     </section>`;
   };
@@ -666,12 +715,7 @@
       </div>
       <div class="grid grid-auto">${list.map(goodsCard).join("") || `<div class="empty">${t("沒有符合的品項")}</div>`}</div>
       <h2 class="section-title">${t("購買小提醒")}</h2>
-      ${langNotice()}
-      <div class="grid grid-3">
-        <div class="card"><h4 style="margin-top:0">✅ 認明正版</h4><p class="note">優先從官方指定通路購買。二手平台購買時注意是否為盜版小卡或仿冒周邊。</p></div>
-        <div class="card"><h4 style="margin-top:0">📦 特典差異</h4><p class="note">不同通路（Ktown4u、Weverse Shop、各唱片行）的預購特典小卡不同，下單前先比較。</p></div>
-        <div class="card"><h4 style="margin-top:0">📊 銷量計入</h4><p class="note">想幫 YENA 衝初動銷量的話，選擇有計入 Hanteo / Circle Chart 的通路。</p></div>
-      </div>
+      ${tipCards(CT("goodsTips"))}
     </section>`;
   };
 
@@ -736,12 +780,7 @@
       ${up.length ? `<div class="grid grid-auto">${up.map(card).join("")}</div>` : `<div class="card empty">${t("目前沒有已登記的應援活動，歡迎投稿！")} 🐥</div>`}
       ${past.length ? `<h2 class="section-title">${t("過去的活動")}</h2><div class="grid grid-auto">${past.map(card).join("")}</div>` : ""}
       <h2 class="section-title">${t("常見應援活動")}</h2>
-      ${langNotice()}
-      <div class="grid grid-3">
-        <div class="card"><h4 style="margin-top:0">☕ 生日咖啡廳（생카）</h4><p class="note">9/29 生日前後，粉絲租借咖啡廳布置成 YENA 主題，消費可領杯套、貼紙等應援小物。</p></div>
-        <div class="card"><h4 style="margin-top:0">🚇 應援廣告</h4><p class="note">在地鐵站、公車、大型看板刊登生日或出道紀念日廣告，常見於首爾江南、弘大一帶。</p></div>
-        <div class="card"><h4 style="margin-top:0">🎁 應援物發放</h4><p class="note">演唱會、頒獎典禮現場免費發放手幅、貼紙等，數量有限請遵守主辦規則。</p></div>
-      </div>
+      ${tipCards(CT("eventTypes"))}
     </section>`;
   };
 
@@ -769,44 +808,18 @@
   pages.guide = () => `<section class="page container">
       <h1 class="page-title">📣 ${t("應援指南")}</h1>
       <p class="page-sub">${t("新粉也能馬上上手：打榜、投票、追星禮儀一次看懂。")}</p>
-      ${langNotice()}
       <div class="grid grid-2">
-        <div class="card">
-          <h2 class="section-title" style="margin-top:0">🎧 ${t("串流打榜")}</h2>
-          <ol class="guide-steps">
-            <li><div><b>韓國音源平台</b><br><span class="note">Melon、Genie、Bugs、FLO、VIBE 是 Circle Chart 與音樂節目計分來源，有帳號的話優先使用。</span></div></li>
-            <li><div><b>建立歌單播放</b><br><span class="note">主打曲搭配收錄曲與其他歌手歌曲交錯播放，避免同一首單曲無限循環被判定為異常。</span></div></li>
-            <li><div><b>音量不要調成 0</b><br><span class="note">部分平台會不計入靜音播放。</span></div></li>
-            <li><div><b>全球平台</b><br><span class="note">Spotify、Apple Music、YouTube Music 也算數，Spotify 可加入 YENA 的「This Is YENA」歌單。</span></div></li>
-          </ol>
-        </div>
-        <div class="card">
-          <h2 class="section-title" style="margin-top:0">▶ YouTube MV</h2>
-          <ol class="guide-steps">
-            <li><div><b>登入帳號觀看</b><br><span class="note">未登入或無痕模式的觀看數計入率較低。</span></div></li>
-            <li><div><b>不要調到最低畫質、不要靜音</b></div></li>
-            <li><div><b>觀看間穿插其他影片</b><br><span class="note">連續重播同一支 MV 可能被過濾。</span></div></li>
-            <li><div><b>按讚、留言、分享</b><br><span class="note">互動有助於推薦演算法。</span></div></li>
-          </ol>
-        </div>
+        <div class="card"><h2 class="section-title" style="margin-top:0">🎧 ${t("串流打榜")}</h2>${steps(CT("stream"))}</div>
+        <div class="card"><h2 class="section-title" style="margin-top:0">▶ YouTube MV</h2>${steps(CT("mv"))}</div>
       </div>
       <h2 class="section-title">🗳️ ${t("音樂節目投票")}</h2>
       <div class="card table-wrap"><table class="tbl">
         <tr><th>${t("節目")}</th><th>${t("電視台")}</th><th>${t("播出（KST）")}</th><th>${t("投票方式")}</th></tr>
-        <tr><td>THE SHOW</td><td>SBS M</td><td>${WD[LANG][2]}</td><td>依節目公告的投票 App</td></tr>
-        <tr><td>Show Champion</td><td>MBC M</td><td>${WD[LANG][3]}</td><td>IDOLCHAMP App</td></tr>
-        <tr><td>M Countdown</td><td>Mnet</td><td>${WD[LANG][4]}</td><td>Mnet Plus App</td></tr>
-        <tr><td>Music Bank</td><td>KBS2</td><td>${WD[LANG][5]}</td><td>依節目公告（海外粉絲部分可參與）</td></tr>
-        <tr><td>Show! Music Core</td><td>MBC</td><td>${WD[LANG][6]}</td><td>依節目公告的投票 App</td></tr>
-        <tr><td>Inkigayo</td><td>SBS</td><td>${WD[LANG][0]}</td><td>依節目公告的投票 App</td></tr>
+        ${[["THE SHOW", "SBS M", 2], ["Show Champion", "MBC M", 3], ["M Countdown", "Mnet", 4], ["Music Bank", "KBS2", 5], ["Show! Music Core", "MBC", 6], ["Inkigayo", "SBS", 0]].map(([s, ch, d], i) => `<tr><td>${s}</td><td>${ch}</td><td>${WD[LANG][d]}</td><td>${esc(CT("vote")[i] || "")}</td></tr>`).join("")}
       </table></div>
-      <p class="note">各節目的投票平台與計分方式每年可能調整，回歸期間請以節目與 YENA 官方帳號公告為準。</p>
+      <p class="note">${esc(CT("voteNote"))}</p>
       <h2 class="section-title">💛 ${t("追星禮儀")}</h2>
-      <div class="grid grid-3">
-        <div class="card"><h4 style="margin-top:0">🚫 拒絕私生</h4><p class="note">不跟蹤、不打探私人行程、不在非公開場合打擾 YENA 與工作人員。</p></div>
-        <div class="card"><h4 style="margin-top:0">🔍 不傳謠言</h4><p class="note">未經官方證實的消息不散布，發現惡意留言請檢舉而非回應。</p></div>
-        <div class="card"><h4 style="margin-top:0">📸 尊重版權</h4><p class="note">轉載站姐、媒體照片時標註出處，不擅自去浮水印或商用。</p></div>
-      </div>
+      ${tipCards(CT("etiquette"))}
     </section>`;
 
   /* ---------- 粉絲專區 ---------- */
@@ -815,11 +828,12 @@
     const Q = D.quiz;
     if (quizState.done) {
       const s = quizState.score;
-      const msg = s === Q.length ? "滿分！你是真正的 지구미 👑" : s >= Q.length * 0.7 ? "很厲害！YENA 會為你驕傲 💛" : s >= Q.length * 0.4 ? "還不錯，多逛逛本站會更懂 YENA 🐥" : "沒關係，從今天開始認識 YENA 吧！";
+      const M4 = CT("quizMsg");
+      const msg = esc(s === Q.length ? M4[0] : s >= Q.length * 0.7 ? M4[1] : s >= Q.length * 0.4 ? M4[2] : M4[3]);
       return `<div style="text-align:center;padding:16px 0"><div style="font-size:3rem">${s === Q.length ? "🏆" : "🐥"}</div>
         <h3 style="margin:8px 0">${s} / ${Q.length}</h3><p>${msg}</p><button class="btn" data-quiz-restart>${t("再玩一次")}</button></div>`;
     }
-    const item = Q[quizState.i];
+    const item = quizItem(quizState.i);
     return `<div class="progress"><div style="width:${(quizState.i / Q.length) * 100}%"></div></div>
       <p class="note" style="margin:10px 0 0">${quizState.i + 1} / ${Q.length} · ${t("目前 {n} 分", { n: quizState.score })}</p>
       <p class="quiz-q">${esc(item.q)}</p>
@@ -842,7 +856,6 @@
           <p style="margin:6px 0 0">${esc(P_L("fandomMeaning") || P.fandom.meaning)}</p>
         </div>
       </div>
-      ${langNotice()}
       <div class="grid grid-2">
         <div>
           <h2 class="section-title">🎓 ${t("YENA 知識王")}</h2>
@@ -856,7 +869,7 @@
         </div>
         <div>
           <h2 class="section-title">📖 ${t("粉絲用語小字典")}</h2>
-          <div class="card"><table class="tbl" style="min-width:0">${D.glossary.map((g) => `<tr><td style="white-space:nowrap"><b>${esc(g.term)}</b></td><td>${esc(g.desc)}</td></tr>`).join("")}</table></div>
+          <div class="card"><table class="tbl" style="min-width:0">${glossary().map((g) => `<tr><td style="white-space:nowrap"><b>${esc(g.term)}</b></td><td>${esc(g.desc)}</td></tr>`).join("")}</table></div>
           <h2 class="section-title">🎂 ${t("每年紀念日")}</h2>
           <div class="card">${D.anniversaries.map((a) => {
             const tt = todayStr();
@@ -991,7 +1004,8 @@
      詳細頁（彈出視窗）
      ========================================================= */
   let curRoute = "home";
-  const detailHref = (d) => `${location.origin}${location.pathname}#${curRoute}?d=${d}`;
+  // 分享用連結：指向 s/<d>.html（帶有這則內容的預覽圖與標題），點開會自動轉回這裡
+  const detailHref = (d) => `${location.origin}${location.pathname.replace(/[^/]*$/, "")}s/${d}.html`;
   function setDetail(d) { history.replaceState(null, "", `#${curRoute}?d=${d}`); }
   function clearDetail() { history.replaceState(null, "", `#${curRoute}`); }
 
@@ -1177,7 +1191,7 @@
     add(t("影片"), M.videos.filter((v) => hit(v.title, v.desc)).map((v) => ({ d: "v." + v.id, route: "social", t: v.title, s: fmtDate(v.date), img: ytThumb(v) })));
     add(t("成績"), [...M.awards.filter((a) => hit(a.event, a.award, a.work)).map((a) => ({ href: "#records", t: `${a.event} — ${t(a.award)}`, s: a.date ? fmtDate(a.date) : a.year })), ...M.wins.filter((w) => hit(w.show, w.song)).map((w) => ({ href: "#records", t: `${w.show} 1st — ${w.song}`, s: fmtDate(w.date) }))]);
     add(t("應援活動"), M.fanEvents.filter((e) => hit(e.title, e.place, e.host)).map((e) => ({ d: "f." + e.id, route: "events", t: e.title, s: fmtDate(e.date) })));
-    add(t("用語"), D.glossary.filter((x) => hit(x.term, x.desc)).map((x) => ({ href: "#fans", t: x.term, s: x.desc })));
+    add(t("用語"), glossary().filter((x) => hit(x.term, x.desc)).map((x) => ({ href: "#fans", t: x.term, s: x.desc })));
     return g;
   }
   function openSearch() {
@@ -1251,6 +1265,7 @@
     const ds = el.dataset;
 
     if (ds.modalClose !== undefined) return closeModal();
+    if (ds.confetti !== undefined && SP) return confetti(SP.emoji);
     if (ds.open) { if ($("#lb").classList.contains("open")) lbClose(); return openDetail(ds.open); }
     if (ds.album !== undefined) return lbOpen(ds.album, 0);
     if (ds.photo !== undefined) { const [a, i] = ds.photo.split(","); return lbOpen(a, +i); }
@@ -1293,7 +1308,7 @@
     if (ds.gst) { goodsState.st = ds.gst; return render(true); }
     if (ds.rres) { recState.res = ds.rres; return render(true); }
     if (ds.opt !== undefined && !quizState.answered) {
-      const item = D.quiz[quizState.i];
+      const item = quizItem(quizState.i);
       const pick = +ds.opt;
       quizState.answered = true;
       if (pick === item.answer) quizState.score++;
@@ -1342,6 +1357,7 @@
       </div>
     </div>`;
     if (installEvt) $("[data-install]").hidden = false;
+    renderSpecial();
   }
 
   let installEvt = null;

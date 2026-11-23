@@ -16,6 +16,7 @@ window.YENA_DATA = {
     updated: "2026-11-23",
     disclaimer: "本站為粉絲自製之非官方網站，與 YENA 本人及所屬公司無任何關係。所有資訊以官方公告為準。",
     repo: "mintguesss/yena-fansite", // 粉絲投稿（GitHub Issues）用
+    siteUrl: "https://mintguesss.github.io/yena-fansite/", // 分享預覽頁用
   },
 
   /* ---------------- 跑馬燈 ---------------- */

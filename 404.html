@@ -1,0 +1,23 @@
+<!doctype html>
+<html lang="zh-Hant-TW">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>YENA FANS</title>
+  <meta property="og:title" content="YENA FANS — 최예나 非官方粉絲站">
+  <meta property="og:image" content="https://mintguesss.github.io/yena-fansite/assets/og.png">
+  <script>
+    // 分享頁還沒產生（例如剛加入的新聞）時，照樣導回網站上的詳細內容
+    (function () {
+      var p = location.pathname;
+      var base = p.indexOf("/yena-fansite/") === 0 ? "/yena-fansite/" : "/";
+      var m = p.match(/\/s\/([a-z])\.([\w.-]+)\.html$/);
+      var routes = { n: "news", r: "music", e: "schedule", g: "goods", f: "events", v: "social", p: "gallery" };
+      location.replace(base + (m && routes[m[1]] ? "#" + routes[m[1]] + "?d=" + m[1] + "." + m[2] : "#home"));
+    })();
+  </script>
+</head>
+<body style="font-family:sans-serif;background:#fff4f9;color:#2d1020;text-align:center;padding:40px">
+  <p>🐥 <a href="/yena-fansite/">YENA FANS</a></p>
+</body>
+</html>

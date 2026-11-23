@@ -54,6 +54,9 @@ jobs:
             git push
           fi
 
+      - name: 產生分享預覽頁
+        run: node scripts/build-share.mjs
+
       - uses: actions/configure-pages@v5
 
       - uses: actions/upload-pages-artifact@v3
