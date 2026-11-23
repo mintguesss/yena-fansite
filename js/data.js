@@ -15,6 +15,7 @@ window.YENA_DATA = {
     siteName: "YENA FANS",
     updated: "2026-11-23",
     disclaimer: "本站為粉絲自製之非官方網站，與 YENA 本人及所屬公司無任何關係。所有資訊以官方公告為準。",
+    repo: "mintguesss/yena-fansite", // 粉絲投稿（GitHub Issues）用
   },
 
   /* ---------------- 跑馬燈 ---------------- */
@@ -67,6 +68,27 @@ window.YENA_DATA = {
       { date: "2026-11-14", title: "2026 MMA Best Solo Female", desc: "於高尺巨蛋獲頒最佳女子 Solo 獎。" },
       { date: "2026-11-21", title: "2026 MAMA AWARDS 獲獎", desc: "於大阪京瓷巨蛋以〈Catch Catch〉獲頒 Best Dance Performance Female Solo。" },
     ],
+    /* 英文 / 韓文版（facts、timeline 依上面的順序對應） */
+    i18n: {
+      en: {
+        intro: "YENA finished 4th on Mnet's PRODUCE 48 and debuted as a member of IZ*ONE. After the group's activities ended in 2021, she made her solo debut in 2022 with the mini album SMiLEY. Known for her bubbly 'duck' image, top-tier variety sense and characterful pop-dance tracks, she sparked a craze in Korea and China with 'Catch Catch' in 2026 and won Best Solo Female at the 2026 MMA.",
+        birthplace: "Gangdong-gu, Seoul, South Korea", school: "Hanlim Multi Art School", agency: "YH Entertainment", jpLabel: "Victor Entertainment (Japan)",
+        occupation: "Singer, actress, entertainer", family: "Older brother: Choi Sung-min (actor)",
+        fandomMeaning: "From the wordplay '예나 지금이나' (now as always) — YENA and Jigumi together from the past, to now, to forever. Announced on her solo debut day, January 17, 2022.",
+        colorName: "Yen-low (Yena Yellow)",
+        facts: ["Her signature pout — the 'duck face' — made the duckling the fandom's symbol 🐥", "Former Polaris Entertainment trainee; hosted SBS 'Cooking Class' in 2017", "Was diagnosed with lymphoma as a child and recovered", "Plays the guitar", "Variety highlight: cast member of TVING 'Girls' High School Mystery Class' seasons 1–3", "Featured on BTS Jin's 'Loser' (album 'Echo', 2025)", "2025 Japanese single 'STAR!' with Hatsune Miku"],
+        timeline: [["Joins Mnet PRODUCE 48", "Finished 4th and debuted in IZ*ONE."], ["IZ*ONE debut", "First mini album COLOR*IZ, title track 'La Vie en Rose'."], ["IZ*ONE activities end", "Group contract expired; members began new chapters."], ["Web show 'Yena's Animal Detective'", "Produced by Studio Waffle — her first solo hosting gig."], ["Solo debut with SMiLEY", "Title track 'SMILEY (Feat. BIBI)'; fandom name Jigumi announced the same day."], ["Japanese debut", "'SMILEY' Japanese ver. (Feat. Chanmina)."], ["4th mini 'Blooming Wings'", "Title track 'Being a Good Girl Hurts'."], ["5th mini 'LOVE CATCHER'", "'Catch Catch' became a song of the year: 100M+ Spotify streams, Melon TOP 10."], ["2026 Asia tour begins", "Kicked off in Seoul, touring Macau, Taipei, Hong Kong and Tokyo through June."], ["2026 MMA Best Solo Female", "Won Best Female Solo at Gocheok Sky Dome."], ["2026 MAMA AWARDS win", "Won Best Dance Performance Female Solo for 'Catch Catch' at Kyocera Dome Osaka."]],
+      },
+      ko: {
+        intro: "YENA는 Mnet 《PRODUCE 48》 최종 4위로 IZ*ONE 멤버로 데뷔했고, 2021년 그룹 활동 종료 후 2022년 첫 미니앨범 《SMiLEY》로 솔로 데뷔했다. 상큼한 '오리' 이미지와 뛰어난 예능감, 개성 있는 댄스 팝으로 사랑받으며 2026년 '캐치 캐치'로 한국과 중국에서 신드롬을 일으켰고 2026 MMA 베스트 여자 솔로상을 받았다.",
+        birthplace: "대한민국 서울 강동구", school: "한림연예예술고등학교", agency: "위에화 엔터테인먼트 (YH)", jpLabel: "Victor Entertainment (일본)",
+        occupation: "가수, 배우, 방송인", family: "오빠: 최성민 (배우)",
+        fandomMeaning: "'예나 지금이나'에서 따온 이름 — 예나와 지구미는 예전에도, 지금도, 앞으로도 함께라는 뜻. 2022년 1월 17일 솔로 데뷔일에 공개.",
+        colorName: "옌로우 (예나 옐로)",
+        facts: ["트레이드마크인 오리 입술 덕분에 '오리'가 팬덤의 상징 🐥", "폴라리스 엔터테인먼트 연습생 출신, 2017년 SBS 《쿠킹클래스》 진행", "어린 시절 림프종 진단을 받았지만 완치", "기타 연주 가능", "대표 예능: TVING 《여고추리반》 시즌 1–3 고정", "2025년 BTS 진의 'Loser' 피처링 (앨범 《Echo》)", "2025년 일본 싱글 'STAR!'에서 하츠네 미쿠와 협업"],
+        timeline: [["Mnet 《PRODUCE 48》 출연", "최종 4위로 IZ*ONE 데뷔 확정."], ["IZ*ONE 데뷔", "첫 미니앨범 《COLOR*IZ》, 타이틀곡 '라비앙로즈'."], ["IZ*ONE 활동 종료", "계약 만료 후 멤버들 각자 새 출발."], ["개인 웹예능 《예나의 동물탐정》", "스튜디오 와플 제작, 첫 단독 진행."], ["《SMiLEY》로 솔로 데뷔", "타이틀곡 'SMILEY (Feat. BIBI)', 같은 날 팬덤명 지구미 발표."], ["일본 데뷔", "'SMILEY' 일본어 버전 (Feat. ちゃんみな)."], ["4th 미니 《Blooming Wings》", "타이틀곡 '착하다는 말이 제일 싫어'."], ["5th 미니 《LOVE CATCHER》", "'캐치 캐치' 올해의 히트곡: 스포티파이 1억 스트리밍, 멜론 TOP 10."], ["2026 아시아 투어 시작", "서울을 시작으로 마카오·타이베이·홍콩·도쿄까지 6월까지."], ["2026 MMA 베스트 여자 솔로", "고척스카이돔에서 수상."], ["2026 MAMA AWARDS 수상", "교세라 돔 오사카에서 '캐치 캐치'로 베스트 댄스 퍼포먼스 여자 솔로 수상."]],
+      },
+    },
   },
 
   /* ---------------- 作品 Discography ----------------
@@ -145,7 +167,7 @@ window.YENA_DATA = {
   /* ---------------- 周邊 Goods ----------------
      status: preorder | onsale | soldout | ended | upcoming          */
   goods: [
-    { name: "2027 SEASON'S GREETINGS [YENA'S STAR EXPRESS]", type: "年曆", emoji: "🚂", status: "preorder", release: "", preorderEnd: "2026-11-25", note: "與 YECHUNPAL 合作；ID CLIP 已公開。各通路預購特典不同。", stores: [{ name: "Ktown4u", url: "https://www.ktown4u.com/" }] },
+    { name: "2027 SEASON'S GREETINGS [YENA'S STAR EXPRESS]", type: "年曆", emoji: "🚂", keywords: ["STAR_EXPRESS", "STAR EXPRESS", "SEASONSGREETING"], status: "preorder", release: "", preorderEnd: "2026-11-25", note: "與 YECHUNPAL 合作；ID CLIP 已公開。各通路預購特典不同。", stores: [{ name: "Ktown4u", url: "https://www.ktown4u.com/" }] },
     { name: "5th Mini Album《LOVE CATCHER》", type: "專輯", emoji: "💘", status: "onsale", release: "2026-03-11", note: "多版本，購買前請確認版本與特典。", stores: [{ name: "Ktown4u", url: "https://www.ktown4u.com/" }] },
     { name: "4th Mini Album《Blooming Wings》", type: "專輯", emoji: "🦋", status: "onsale", release: "2025-07-29", note: "", stores: [{ name: "Ktown4u", url: "https://www.ktown4u.com/" }] },
     { name: "2025 SEASON'S GREETINGS [CHECK-IN WITH YENA HOTEL]", type: "年曆", emoji: "🏨", status: "ended", release: "2024-12-01", note: "已過販售期，可留意二手平台（小心盜版）。", stores: [{ name: "Everline Shop", url: "https://everlineshop.com/" }] },
@@ -156,7 +178,7 @@ window.YENA_DATA = {
   socials: [
     { platform: "x", name: "X (Twitter)", handle: "@YENA_OFFICIAL", url: "https://x.com/YENA_OFFICIAL", desc: "官方公告、行程、自拍更新最快", verified: true },
     { platform: "instagram", name: "Instagram", handle: "@yena.jigumina", url: "https://www.instagram.com/yena.jigumina/", desc: "本人日常、穿搭、Reels", verified: false },
-    { platform: "youtube", name: "YouTube", handle: "YENA OFFICIAL", url: "https://www.youtube.com/results?search_query=%EC%B5%9C%EC%98%88%EB%82%98+YENA+OFFICIAL", desc: "MV、Vlog、幕後花絮（訂閱破百萬）", verified: false },
+    { platform: "youtube", name: "YouTube", handle: "@YENA_OFFICIAL", url: "https://www.youtube.com/@YENA_OFFICIAL", desc: "MV、Vlog、幕後花絮（訂閱破百萬）", verified: true },
     { platform: "tiktok", name: "TikTok", handle: "YENA", url: "https://www.tiktok.com/search?q=YENA%20%EC%B5%9C%EC%98%88%EB%82%98", desc: "舞蹈挑戰、短影音", verified: false },
     { platform: "weibo", name: "微博", handle: "崔叡娜", url: "https://s.weibo.com/weibo?q=%E5%B4%94%E5%8F%A1%E5%A8%9C", desc: "中文圈公告", verified: false },
     { platform: "bilibili", name: "Bilibili", handle: "崔叡娜 YENA", url: "https://search.bilibili.com/all?keyword=%E5%B4%94%E5%8F%A1%E5%A8%9C", desc: "〈Catch Catch〉MV 破 500 萬", verified: false },
@@ -176,6 +198,18 @@ window.YENA_DATA = {
     { date: "2026-09-02", event: "2026 Brand of the Year Awards", award: "女子 Solo 歌手部門", work: "" },
     { date: "2026-08-27", event: "2026 K-World Dream Awards", award: "K-World Dream Best Song", work: "Catch Catch" },
   ],
+
+  /* ---------------- 成績紀錄（排行榜、串流等；音樂節目一位與獎項會自動抓取） ---------------- */
+  records: [
+    { date: "2026-05-06", title: "〈Catch Catch〉Bilibili MV 突破 517 萬觀看", detail: "2026 年 K-pop MV 在 Bilibili 的最高觀看紀錄之一。", source: "Sports Kyunghyang", url: "https://sports.khan.co.kr/en/article/202605061403007" },
+    { date: "2026-04-24", title: "〈Catch Catch〉Spotify 串流突破 1 億", detail: "Melon TOP100 最高第 8 名，掀起「Catch Catch 症候群」。", source: "The Korea Times", url: "https://www.koreatimes.co.kr/entertainment/k-pop/20260424/catch-catch-syndrome-yena-core-suggest-new-survival-strategy-in-group-dominated-k-pop-scene" },
+    { date: "2026-08-11", title: "AAA 2026 高雄場 10 萬席 10 分鐘售罄", detail: "YENA 名列出演陣容。", source: "OSEN", url: "https://www.osen.co.kr/article/G1112854892" },
+  ],
+
+  /* ---------------- 應援活動（生日咖啡廳、應援廣告等）----------------
+     粉絲也可以透過網站上的「投稿」按鈕送出，審核通過（GitHub Issue 加上 approved 標籤）後會自動出現
+     { date, end, title, kind, place, host, note, link, image }                              */
+  fanEvents: [],
 
   /* ---------------- 綜藝 / 戲劇 ---------------- */
   appearances: [

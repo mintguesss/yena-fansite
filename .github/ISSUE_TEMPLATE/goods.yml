@@ -1,0 +1,50 @@
+name: 🛍️ 投稿周邊 Submit merch
+description: 新專輯、年曆、MD 等販售資訊。審核通過後會自動出現在網站。
+title: "[周邊] "
+labels: ["submission", "goods"]
+body:
+  - type: input
+    id: name
+    attributes:
+      label: 品名 Name
+    validations:
+      required: true
+  - type: input
+    id: type
+    attributes:
+      label: 類型 Type
+      placeholder: 專輯 / 年曆 / MD …
+  - type: dropdown
+    id: status
+    attributes:
+      label: 狀態 Status
+      options:
+        - preorder
+        - onsale
+        - upcoming
+        - soldout
+        - ended
+    validations:
+      required: true
+  - type: input
+    id: date
+    attributes:
+      label: 發售日期 Date (YYYY-MM-DD)
+  - type: input
+    id: deadline
+    attributes:
+      label: 預購截止 Deadline (YYYY-MM-DD)
+  - type: textarea
+    id: stores
+    attributes:
+      label: 購買連結 Store links（一行一個）
+    validations:
+      required: true
+  - type: textarea
+    id: note
+    attributes:
+      label: 說明 Note
+  - type: input
+    id: image
+    attributes:
+      label: 圖片 Image URL（選填，需為 .jpg/.png/.webp 網址）

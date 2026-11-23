@@ -2,15 +2,45 @@
 
 🌐 線上版：<https://mintguesss.github.io/yena-fansite/>
 
-純 HTML / CSS / JavaScript，不需要安裝任何套件或打包工具。
+純 HTML / CSS / JavaScript，不需要安裝套件或打包。內容分兩種：
 
-## 更新線上版
+| 來源 | 檔案 | 怎麼更新 |
+| --- | --- | --- |
+| 人工整理 | `js/data.js` | 你手動編輯 |
+| 自動抓取 | `data/auto.json` | GitHub Actions 每 4 小時自動更新，不用動 |
 
-改完檔案後推上 `main`，GitHub Pages 約 1 分鐘內自動更新。若改了 `css/` 或 `js/`，記得把 `index.html` 裡 `?v=` 的數字加 1，避免訪客看到瀏覽器快取的舊版。
+網站載入時會把兩者合併；自動資料抓不到時，網站照樣用人工資料運作。
 
-```powershell
-git add -A; git commit -m "update"; git push
-```
+## 自動更新了什麼
+
+| 項目 | 來源 | 出現在 |
+| --- | --- | --- |
+| 韓 / 英 / 中文新聞（含配圖、摘要） | Bing News RSS ＋ 原文的 og 標籤 | 消息、首頁、相簿「新聞照片」、行程詳細頁的相關新聞 |
+| 作品封面、曲目、30 秒試聽 | iTunes API | 作品、周邊（專輯封面）、行程（發行日） |
+| 官方 YouTube 影片、訂閱數 | YouTube RSS | 作品、社群、相簿「官方 YouTube」、周邊配圖 |
+| 頒獎典禮、音樂節目一位 | 英文維基百科 | 成績、簡介、行程（一位紀錄） |
+| CC 授權照片 | Wikimedia Commons | 相簿 |
+| 粉絲投稿的行程 / 應援活動 / 周邊 | GitHub Issues（加上 `approved` 標籤的） | 行程、應援活動、周邊 |
+
+腳本在 `scripts/update.mjs`，排程在 `.github/workflows/update.yml`。每個來源各自獨立，某一個失敗時會保留上一次的資料。
+
+- 想馬上更新：到 GitHub 的 **Actions → Auto update & deploy → Run workflow**。
+- 在本機手動跑一次：`node scripts/update.mjs`（需要 Node 20 以上）。
+
+## 粉絲投稿怎麼審核
+
+1. 粉絲在網站按「投稿行程 / 投稿應援活動 / 投稿周邊」，會開啟 GitHub 的表單（需要 GitHub 帳號）。
+2. 你在 repo 的 **Issues** 看到投稿，確認內容沒問題後加上 **`approved`** 標籤。
+3. 幾分鐘內自動出現在網站上。要撤下就拿掉標籤或關閉 issue。
+
+## 頁面
+
+首頁、簡介、作品、行程、相簿、消息、周邊、成績、應援活動、社群、應援指南、粉絲專區。
+
+- 作品、行程、消息、周邊、應援活動、影片、單張照片都能點開看詳細內容，而且每個都有自己的網址可以分享（例如 `#news?d=n.xxxx`）。
+- 右上角 🔍 是全站搜尋（快捷鍵 `/` 或 `Ctrl+K`）；語言可切換中文 / English / 한국어。
+- 可以「加到主畫面」當 App 用，離線時也能看到上次載入的內容。
+- 分享到 LINE、Discord、X 會顯示預覽圖（`assets/og.png`）。
 
 ## 本機預覽
 
@@ -18,43 +48,33 @@ git add -A; git commit -m "update"; git push
 python -m http.server 5520 --directory C:\Project\yena-fansite
 ```
 
-然後打開 <http://localhost:5520>。（直接雙擊 `index.html` 也可以開，但部分瀏覽器對 `file://` 有限制，建議用上面的方式。）
+然後打開 <http://localhost:5520>。
 
-## 頁面
+## 手動更新內容（`js/data.js`）
 
-| 頁面 | 網址 | 內容 |
-| --- | --- | --- |
-| 首頁 | `#home` | 下一個行程倒數、出道天數、生日 D-day、最新作品、近期行程、最新消息 |
-| 簡介 | `#profile` | 基本資料、經歷年表、TMI、獲獎紀錄、綜藝 / 戲劇列表 |
-| 作品 | `#music` | Discography（可依類型篩選、排序）、各平台收聽連結、精選影片、入坑歌單 |
-| 行程 | `#schedule` | 月曆、分類篩選、KST 自動換算當地時間、加入 Google 日曆 / 下載 .ics |
-| 相簿 | `#gallery` | 18 本相簿（頒獎典禮、畫報、日常 SNS、舞台、經典回顧），燈箱大圖、方向鍵／滑動切換、下載原圖、整本打包 zip |
-| 消息 | `#news` | 新聞時間軸、關鍵字搜尋、標籤篩選、原文來源連結 |
-| 周邊 | `#goods` | 專輯 / 年曆等販售狀態、預購截止倒數、購買通路 |
-| 社群 | `#social` | 官方帳號一覽、最新動態整理、影片 |
-| 應援指南 | `#guide` | 串流打榜、MV 觀看、音樂節目投票、追星禮儀 |
-| 粉絲專區 | `#fans` | 粉絲名由來、知識王測驗、入坑天數計算、用語字典、年度紀念日 |
-
-另有深色模式、手機版選單、快訊跑馬燈。
-
-## 如何更新內容
-
-**所有內容都在 `js/data.js`**，改完存檔、重新整理網頁就生效。
-
-- 新增行程 → 在 `schedule` 加一筆：
+- 新增行程 → `schedule` 加一筆：
   ```js
   { date: "2026-12-05", time: "18:00", title: "MAMA AWARDS 出演", category: "award", place: "香港", note: "", link: "" },
   ```
-  `time` 寫韓國時間（留空表示全天）。`category` 可用：`release` `show` `award` `variety` `concert` `goods` `live` `etc`。
-- 新增消息 → `news` 最上面加一筆（新的放前面）。
-- 新增作品 → `releases` 加一筆；若有 MV 的 YouTube 影片 ID，可放進 `videos` 直接嵌入播放。
-- 周邊 → `goods`，`status` 可用 `preorder` `onsale` `upcoming` `soldout` `ended`。
-- 新增相簿 → 在 kpopping 打開該相簿，對圖片按右鍵「複製圖片網址」（`https://cdn.kpopping.com/kpics/...`），加進 `gallery` 的 `images`；`heroPhotos` 決定首頁拍立得放哪三張。
-- 生日、出道日等紀念日放在 `anniversaries`，每年會自動出現在行程表。
-- 記得更新 `meta.updated` 日期。
+  `time` 寫韓國時間（留空表示全天）。`category`：`release` `show` `award` `variety` `concert` `goods` `live` `etc`。
+- 新增精選消息 → `news` 最上面加一筆（會標上「精選」，配圖會自動抓）。
+- 作品 → `releases`；封面和曲目會自動從 iTunes 對應上，沒有對應到的新作品也會自動出現。
+- 周邊 → `goods`，`status`：`preorder` `onsale` `upcoming` `soldout` `ended`。沒有圖片時可加 `keywords`，會自動找相關影片或新聞當配圖。
+- 成績 → `records`（排行榜、串流紀錄）；獎項和一位會自動抓，不用手動加。
+- 應援活動 → `fanEvents`，或請粉絲用投稿表單。
+- 相簿 → 在 kpopping 對圖片按右鍵「複製圖片網址」，加進 `gallery` 的 `images`；`heroPhotos` 決定首頁拍立得放哪三張。
+- 英文 / 韓文介面文字在 `js/i18n.js`；簡介的英韓版在 `profile.i18n`。
+- 記得更新 `meta.updated`。
 
-## 資料可信度
+改了 `css/` 或 `js/` 之後，把 `index.html` 裡 `?v=` 的數字加 1，然後推上 GitHub：
 
-- 資料整理自 Wikipedia 與韓國媒體英文版報導（2026-11-23），來源列在網站頁尾與每則消息下方。
-- `verified: false` 的項目會在網頁上顯示「待確認」：目前只有 X（@YENA_OFFICIAL）經新聞確認；Instagram（@yena.jigumina）與應援色只有粉絲站來源；YouTube、TikTok、微博、Bilibili 沒找到可靠的帳號來源，連結先導向該平台的搜尋頁。
-- 照片以連結方式引用 kpopping 整理的圖片（不另外下載），每本相簿標註原始出處；版權屬原著作權人。若要公開架站，請保留頁面上的版權聲明。小鴨插圖為原創。
+```powershell
+git add -A; git commit -m "update"; git push
+```
+
+## 資料可信度與版權
+
+- `verified: false` 的項目會顯示「待確認」。目前 X（@YENA_OFFICIAL）與 YouTube（@YENA_OFFICIAL）已確認；Instagram 與應援色只有粉絲站來源；TikTok、微博、Bilibili 沒找到可靠來源，連結先導向該平台的搜尋頁。
+- 自動新聞只顯示標題、媒體提供的摘要（og:description）與配圖，並連回原文，不轉載全文。
+- 照片以連結方式引用（kpopping、各媒體、YouTube 縮圖、Wikimedia Commons），每張都標註來源；版權屬原著作權人。kpopping 有機器人驗證，所以不會自動抓取，只能手動加入。小鴨插圖為原創。
+- 自動更新的 commit 使用 repo 擁有者的 noreply 信箱，Contributors 不會多出 bot 帳號。

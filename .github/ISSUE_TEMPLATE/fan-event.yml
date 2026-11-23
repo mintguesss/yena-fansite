@@ -1,0 +1,57 @@
+name: 💛 投稿應援活動 Submit a fan event
+description: 生日咖啡廳、應援廣告、應援物發放等粉絲活動。審核通過後會自動出現在網站與行程表。
+title: "[應援] "
+labels: ["submission", "fan-event"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        請填寫活動資訊，站長確認後加上 `approved` 標籤就會自動刊登。請勿填寫私人聯絡方式。
+        Please don't include private contact info. Goes live once a maintainer adds the `approved` label.
+  - type: input
+    id: title
+    attributes:
+      label: 活動名稱 Title
+      placeholder: 例：YENA 生日咖啡廳 in 台北
+    validations:
+      required: true
+  - type: dropdown
+    id: kind
+    attributes:
+      label: 類型 Type
+      options:
+        - 生日咖啡廳 Birthday café
+        - 應援廣告 Support ad
+        - 應援物發放 Freebies
+        - 線上活動 Online
+        - 其他 Other
+  - type: input
+    id: date
+    attributes:
+      label: 開始日期 Date (YYYY-MM-DD)
+    validations:
+      required: true
+  - type: input
+    id: end
+    attributes:
+      label: 結束日期 End date (YYYY-MM-DD，可留空)
+  - type: input
+    id: place
+    attributes:
+      label: 地點 Place
+  - type: input
+    id: host
+    attributes:
+      label: 主辦 Host（粉絲站名稱或帳號）
+  - type: textarea
+    id: note
+    attributes:
+      label: 說明 Note
+  - type: input
+    id: link
+    attributes:
+      label: 連結 Link（活動公告）
+  - type: input
+    id: image
+    attributes:
+      label: 圖片 Image URL（海報，選填，需為 .jpg/.png/.webp 網址）

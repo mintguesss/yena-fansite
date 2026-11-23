@@ -1,0 +1,58 @@
+name: 📅 投稿行程 Submit a schedule
+description: YENA 的新行程（音樂節目、綜藝、活動等）。審核通過後會自動出現在網站。
+title: "[行程] "
+labels: ["submission", "schedule"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        感謝投稿！請附上官方公告或新聞連結，站長確認後加上 `approved` 標籤就會自動刊登。
+        Thanks! Please include an official source. Once a maintainer adds the `approved` label, it goes live automatically.
+  - type: input
+    id: title
+    attributes:
+      label: 標題 Title
+      placeholder: 例：M Countdown 出演
+    validations:
+      required: true
+  - type: input
+    id: date
+    attributes:
+      label: 日期 Date (YYYY-MM-DD)
+      placeholder: "2026-12-05"
+    validations:
+      required: true
+  - type: input
+    id: time
+    attributes:
+      label: 時間 Time (KST, HH:MM，可留空)
+      placeholder: "18:00"
+  - type: dropdown
+    id: category
+    attributes:
+      label: 分類 Category
+      options:
+        - release
+        - show
+        - award
+        - variety
+        - concert
+        - goods
+        - live
+        - etc
+    validations:
+      required: true
+  - type: input
+    id: place
+    attributes:
+      label: 地點 Place
+  - type: textarea
+    id: note
+    attributes:
+      label: 說明 Note
+  - type: input
+    id: link
+    attributes:
+      label: 連結 Link（官方公告或新聞）
+    validations:
+      required: true
