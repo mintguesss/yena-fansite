@@ -6,7 +6,7 @@
 
 ## 更新線上版
 
-改完檔案後推上 `main`，GitHub Pages 約 1 分鐘內自動更新：
+改完檔案後推上 `main`，GitHub Pages 約 1 分鐘內自動更新。若改了 `css/` 或 `js/`，記得把 `index.html` 裡 `?v=` 的數字加 1，避免訪客看到瀏覽器快取的舊版。
 
 ```powershell
 git add -A; git commit -m "update"; git push
